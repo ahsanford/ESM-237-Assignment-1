@@ -15,12 +15,27 @@ library(janitor)
 library(kableExtra)
 library(ggplot2)
 library(dplyr)
+library(lubridate)
+library(Kendall)
 ```
 
 
 ```{r}
 # Read in the data 
-precip <- read_csv(here("data", "thermal_precip_temp.csv")) %>% 
+thermal <- read_csv(here("data", "thermal_precip_temp.csv")) %>% 
   clean_names() # make all column names lower cased, replace spaces and special characters with underscores
 
 ```
+
+
+```{r dailyplots, echo=TRUE}
+
+ggplot(thermal, aes(date, tmax))+geom_line()+ labs(y="Daily Maximum Temperature (degrees F)", x="Date")
+
+ggplot(thermal, aes(date, tmin))+geom_line()+ labs(y="Daily Minimum Temperature (degrees F)", x="Date")
+
+ggplot(thermal, aes(date, prcp))+geom_line()+ labs(y="Daily Rainfall (in)", x="Date")
+
+```
+
+
