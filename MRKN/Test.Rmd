@@ -30,11 +30,17 @@ thermal <- read_csv(here("data", "thermal_precip_temp.csv")) %>%
 
 ```{r dailyplots, echo=TRUE}
 
-ggplot(thermal, aes(date, tmax))+geom_line()+ labs(y="Daily Maximum Temperature (degrees F)", x="Date")
+ggplot(thermal, aes(x = date, y = tmax)) +
+         geom_line() +
+         labs(y="Daily Maximum Temperature (degrees F)", x="Date")
 
-ggplot(thermal, aes(date, tmin))+geom_line()+ labs(y="Daily Minimum Temperature (degrees F)", x="Date")
+ggplot(thermal, aes(x = date, y = tmin))+
+  geom_line()+ 
+  labs(y="Daily Minimum Temperature (degrees F)", x="Date")
 
-ggplot(thermal, aes(date, prcp))+geom_line()+ labs(y="Daily Rainfall (in)", x="Date")
+ggplot(thermal, aes(x = date, y = prcp))+
+  geom_line()+ 
+  labs(y="Daily Rainfall (in)", x="Date")
 
 ```
 
