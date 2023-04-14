@@ -1,0 +1,26 @@
+---
+title: "Test"
+author: "Abigail Sanford"
+date: "4/14/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(kableExtra)
+library(ggplot2)
+library(dplyr)
+```
+
+
+```{r}
+# Read in the data 
+precip <- read_csv(here("data", "3303247.csv")) %>% 
+  clean_names() # make all column names lower cased, replace spaces and special characters with underscores
+
+```
