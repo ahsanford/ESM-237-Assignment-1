@@ -20,7 +20,7 @@ library(dplyr)
 
 ```{r}
 # Read in the data 
-precip <- read_csv(here("data", "3303247.csv")) %>% 
+precip <- read_csv(here("data", "thermal_precip_temp.csv")) %>% 
   clean_names() # make all column names lower cased, replace spaces and special characters with underscores
 
 ```
