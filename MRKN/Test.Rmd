@@ -17,13 +17,13 @@ library(lubridate)
 library(tidyverse)
 library(Kendall)
 
-clim = read.table("thermal_precip_temp.csv",fill=TRUE,sep=',',header=T)
-head(clim) # read in the data
+climtrend = read.table("thermal_precip_temp.csv",fill=TRUE,sep=',',header=T)
+head(climtrend) # read in the data
 ```
 
 
 ```{r asdate}
-date=as.Date(clim$DATE) # command transforms the DATE field in clim table into an R-formatted date array that R knows how to do things with
+date=as.Date(climtrend$DATE) # command transforms the DATE field in climtrend table into an R-formatted date array that R knows how to do things with
 
 ```
 
@@ -33,11 +33,11 @@ Make a plot to see what data is missing.
 Daily data of air temperature 
 ```{r dailyplots, echo=TRUE}
 
-ggplot(clim, aes(date, TMAX))+geom_line()+ labs(y="Daily Maximum Temperature (degrees F)", x="Date")
+ggplot(climtrend, aes(date, TMAX))+geom_line()+ labs(y="Daily Maximum Temperature (degrees F)", x="Date")
 
-ggplot(clim, aes(date, TMIN))+geom_line()+ labs(y="Daily Minimum Temperature (degrees F)", x="Date")
+ggplot(climtrend, aes(date, TMIN))+geom_line()+ labs(y="Daily Minimum Temperature (degrees F)", x="Date")
 
-ggplot(clim, aes(date, PRCP))+geom_line()+ labs(y="Daily Rainfall (in)", x="Date")
+ggplot(climtrend, aes(date, PRCP))+geom_line()+ labs(y="Daily Rainfall (in)", x="Date")
 
 ```
 
