@@ -25,7 +25,8 @@ head(climtrend) # read in the data
 ```{r asdate}
 climtrendtidy <- climtrend %>% 
   select(DATE, PRCP, TMAX, TMIN) %>% # selected the columns I want to keep which include date, precipitation, temperature max, and temperature minimum
-  mutate(DATE = mdy(DATE)) # converts the date column into the 'date' class
+  mutate(DATE = mdy(DATE)) %>% # converts the date column into the 'date' class
+  mutate(YEAR = year(DATE)) # Create new column with just the year in it
 ```
 
 
@@ -96,12 +97,19 @@ ggplot(climtrendtidy, aes(DATE, climtrendtidy$TMAX))+geom_line()+ labs(y="Daily 
 
 ```{r annual, echo=TRUE}
 
-clim.mwy = clim %>% group_by(year(date)) %>% summarize(tmax=mean(TMAX), tmin=mean(TMIN), precip=sum(PRCP))
-clim.mwy$dt = unique(year(date))
+climyearmean <- climtrendtidy %>%
+  group_by(YEAR) %>%
+  summarize(tmax= mean(TMAX), 
+            tmin= mean(TMIN),
+            precip= sum(PRCP))
 
-ggplot(clim.mwy, aes(x=dt, tmax))+geom_point(col="red")+
-  scale_y_continuous(limits=c(min(clim.mwy$tmin), max(clim.mwy$tmax)))+
-geom_point(data=clim.mwy, aes(x=dt, tmin), col="blue")
+climyearmean
+
+ggplot(climyearmean, aes(x=YEAR, tmax)) + 
+  geom_point(col="red") + 
+  scale_y_continuous(limits=c(min(climyearmean$tmin),
+                              max(climyearmean$tmax))) + 
+  geom_point(data=climyearmean, aes(x=YEAR, tmin), col="blue")
 
 a = ggplot(clim.mwy, aes(x=dt, tmax))+geom_point(col="red")+
   scale_y_continuous(limits=c(min(clim.mwy$tmin), max(clim.mwy$tmax)))+
