@@ -57,43 +57,6 @@ ggplot(climtrendtidy, aes(DATE, PRCP)) +
 
 we need to check this: "Some values are "NA" in temperature and precipitation; these have been trimmed automatically by ggplot, but this may not be the case for all functions. In general, you'll want to check meta data to see how missing data is labelled: -999 or NA are common choices." Ours is done as NA
 
-### Filling in missing data
-
-Generally speaking, if not much (say, < 0.5 percent) of your data is missing, then it's not going to cause substantial problems to fill in those gaps by making reasonable approximations. *BUT, you must remember that you are doing this!!!* Otherwise, you run the risk of drawing false conclusions by over-counting data that's not "real".
-
-Some good rules of thumb for filling in missing data:
-
-* **Temperature**
-Replace missing data with the average of the previous and following day
-
-* **Precip**
-For dry places like the Sierra, assume no rain where data is missing (This may not be a good assumption in other places! be careful.)
-
-Some demonstrations of how to do this in R are shown in the code block below:
-
-
-```{r dailyplots.filled, echo=TRUE}
-
-# find the row with missing data
-fillrow = which(is.na(climtrendtidy$PRCP))
-# display the rows to see how many there are
-fillrow
-
-# fill in data in the missing rows with zeros
-climtrendtidy$PRCP[fillrow]=0
-# replot to make sure it works
-ggplot(climtrendtidy, aes(DATE, PRCP))+geom_line()+ labs(y="Daily rainfall (inch)", x="Date")
-
-
-# find rows with missing data
-# temperature: values are either NA or not reasonable for that location (here, below 40F)
-fillrow = which(is.na(climtrendtidy$TMAX) | climtrendtidy$TMAX < 40)
-fillrow = fillrow[2:length(fillrow)]
-climtrendtidy$TMAX[fillrow]=(climtrendtidy$TMAX[fillrow+1]+climtrendtidy$TMAX[fillrow-1])/2
-ggplot(climtrendtidy, aes(DATE, climtrendtidy$TMAX))+geom_line()+ labs(y="Daily Maximum Temperature (degrees F)", x="Date")
-
-```
-
 
 ### Determining whether there is a trend
 
@@ -258,9 +221,4 @@ ggplot(climseasonmean, aes(x=YEAR, y=tmax)) +
        x = "Year",
        title = "Linear Regression of Annual Mean Summer Temperatures in Thermal, CA (1950-2022)")
 ```
-
-
-# look only at summer
-
-
 
