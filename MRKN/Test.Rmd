@@ -111,9 +111,11 @@ ggplot(climyearmean, aes(x=YEAR, tmax)) +
                               max(climyearmean$tmax))) + 
   geom_point(data=climyearmean, aes(x=YEAR, tmin), col="blue")
 
-a = ggplot(clim.mwy, aes(x=dt, tmax))+geom_point(col="red")+
-  scale_y_continuous(limits=c(min(clim.mwy$tmin), max(clim.mwy$tmax)))+
-geom_point(data=clim.mwy, aes(x=dt, tmin), col="blue")
+a = ggplot(climyearmean, aes(x=YEAR, tmax)) + 
+  geom_point(col="red") +
+  scale_y_continuous(limits=c(min(climyearmean$tmin),
+                              max(climyearmean$tmax)))+
+geom_point(data=climyearmean, aes(x=YEAR, tmin), col="blue")
 
 ```
 
