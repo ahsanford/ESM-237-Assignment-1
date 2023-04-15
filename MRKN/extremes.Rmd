@@ -20,14 +20,12 @@ library(tidyverse)
 
 ```{r readdata}
 clim <- read.table("thermal_precip_temp.csv", fill=TRUE, sep=',', header=T) # read in the data
-
-filter(clim, NAME == "DESERT RESORTS REGIONAL AIRPORT, CA US") # Only keep data from the station that has both temp and precip info
   
 head(clim) #this lets us look at our data table in the Rmarkdown rather than having to navigate to the data table in the environment
 
 climtidy <- clim %>% 
   select(DATE, PRCP, TMAX, TMIN) %>% # selected the columns I want to keep which include date, precipitation, temperature max, and temperature minimum
-  mutate(DATE = ymd(DATE)) %>% # converts the date column into the 'date' class
+  mutate(DATE = mdy(DATE)) %>% # converts the date column into the 'date' class
   mutate(YEAR = year(DATE)) # Create new column with just the year in it
   
 
@@ -40,7 +38,7 @@ climtidy <- clim %>%
 ```{r}
 heatwavedays <- climtidy %>% 
   mutate(HEATWAVE = ifelse(clim$TMAX >= 80, 1, 0)) %>% # created a new column that puts a 1 down if temp was 80F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 80 to the new heatwave threshold
-  drop_na() # remove NA values, this removed 12,276 observations...do we need to anything about that
+  drop_na() # remove NA values, this removed 26 observations
   
   
 ```
@@ -69,14 +67,14 @@ ggplot(heatwavedaystidy, aes(x = YEAR, y = HEATWAVE_sum)) +
   geom_smooth(method = 'lm', se = FALSE, color = "dimgrey") +
   labs(y = "Number of Heatwave Days (Threshold 80F)",
        x = "Year",
-       title = "Annual Amount of Heatwave Days in Thermal California (1998-2022)") + 
+       title = "Annual Amount of Heatwave Days in Thermal California (1950-2022)") + 
   theme_bw() + 
   theme(plot.title = element_text(hjust = 0.5),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(color = "black")) + 
-    ylim(0, 500) +
-  scale_x_continuous(breaks = c(1945, 1955, 1965, 1975, 1985, 1995, 2005, 2015))
+    ylim(0, 365) +
+  scale_x_continuous(breaks = c(1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))
 
 
 ```
@@ -108,7 +106,7 @@ heatwavedaystidy90 # view table
 # visualize heatwave days in a graph
 
 ggplot(heatwavedaystidy90, aes(x = YEAR, y = HEATWAVE_sum)) +
-  geom_point(color = "darkorange4", size = 4) +
+  geom_point(color = "darkorange4", size = 2) +
   geom_text(mapping = aes (label = HEATWAVE_sum), 
             position = position_dodge(width = 0.9), 
             cex = 3, 
@@ -116,14 +114,14 @@ ggplot(heatwavedaystidy90, aes(x = YEAR, y = HEATWAVE_sum)) +
   geom_smooth(method = 'lm', se = FALSE, color = "dimgrey") +
   labs(y = "Number of Heatwave Days (Threshold 90F)",
        x = "Year",
-       title = "Annual Amount of Heatwave Days in Thermal California (1998-2022)") + 
+       title = "Annual Amount of Heatwave Days in Thermal California (1950-2022)") + 
   theme_bw() + 
   theme(plot.title = element_text(hjust = 0.5),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(color = "black")) + 
     ylim(0, 365) +
-  scale_x_continuous(breaks = c(1998, 2002, 2006, 2010, 2014, 2018, 2022))
+  scale_x_continuous(breaks = c(1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))
 
 
 ```
@@ -154,7 +152,7 @@ heatwavedaystidy100 # view table
 # visualize heatwave days in a graph
 
 ggplot(heatwavedaystidy100, aes(x = YEAR, y = HEATWAVE_sum)) +
-  geom_point(color = "darkorange4", size = 4) +
+  geom_point(color = "darkorange4", size = 2) +
   geom_text(mapping = aes (label = HEATWAVE_sum), 
             position = position_dodge(width = 0.9), 
             cex = 3, 
@@ -162,14 +160,14 @@ ggplot(heatwavedaystidy100, aes(x = YEAR, y = HEATWAVE_sum)) +
   geom_smooth(method = 'lm', se = FALSE, color = "dimgrey") +
   labs(y = "Number of Heatwave Days (Threshold 100F)",
        x = "Year",
-       title = "Annual Amount of Heatwave Days in Thermal California (1998-2022)") + 
+       title = "Annual Amount of Heatwave Days in Thermal California (1950-2022)") + 
   theme_bw() + 
   theme(plot.title = element_text(hjust = 0.5),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(color = "black")) + 
     ylim(0, 365) +
-  scale_x_continuous(breaks = c(1998, 2002, 2006, 2010, 2014, 2018, 2022))
+  scale_x_continuous(breaks = c(1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))
 
 
 ```
@@ -199,7 +197,7 @@ heatwavedaystidy110 # view table
 # visualize heatwave days in a graph
 
 ggplot(heatwavedaystidy110, aes(x = YEAR, y = HEATWAVE_sum)) +
-  geom_point(color = "darkorange4", size = 4) +
+  geom_point(color = "darkorange4", size = 2) +
   geom_text(mapping = aes (label = HEATWAVE_sum), 
             position = position_dodge(width = 0.9), 
             cex = 3, 
@@ -207,14 +205,14 @@ ggplot(heatwavedaystidy110, aes(x = YEAR, y = HEATWAVE_sum)) +
   geom_smooth(method = 'lm', se = FALSE, color = "dimgrey") +
   labs(y = "Number of Heatwave Days (Threshold 110F)",
        x = "Year",
-       title = "Annual Amount of Heatwave Days in Thermal California (1998-2022)") + 
+       title = "Annual Amount of Heatwave Days in Thermal California (1950-2022)") + 
   theme_bw() + 
   theme(plot.title = element_text(hjust = 0.5),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(color = "black")) + 
     ylim(0, 365) +
-  scale_x_continuous(breaks = c(1998, 2002, 2006, 2010, 2014, 2018, 2022))
+  scale_x_continuous(breaks = c(1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))
 
 
 ```
@@ -244,7 +242,7 @@ heatwavedaystidy120 # view table
 # visualize heatwave days in a graph
 
 ggplot(heatwavedaystidy120, aes(x = YEAR, y = HEATWAVE_sum)) +
-  geom_point(color = "darkorange4", size = 4) +
+  geom_point(color = "darkorange4", size = 2) +
   geom_text(mapping = aes (label = HEATWAVE_sum), 
             position = position_dodge(width = 0.9), 
             cex = 3, 
@@ -252,103 +250,91 @@ ggplot(heatwavedaystidy120, aes(x = YEAR, y = HEATWAVE_sum)) +
   geom_smooth(method = 'lm', se = FALSE, color = "dimgrey") +
   labs(y = "Number of Heatwave Days (Threshold 120F)",
        x = "Year",
-       title = "Annual Amount of Heatwave Days in Thermal California (1998-2022)") + 
+       title = "Annual Amount of Heatwave Days in Thermal California (1950-2022)") + 
   theme_bw() + 
   theme(plot.title = element_text(hjust = 0.5),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(color = "black")) + 
     ylim(0, 365) +
-  scale_x_continuous(breaks = c(1998, 2002, 2006, 2010, 2014, 2018, 2022))
+  scale_x_continuous(breaks = c(1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))
 
 
 ```
 
-# How long do the heatwaves last, when there is a heat wave?
+# How many days with precipitation
 
-
-
-# How long does summer last each year?
-
-# Has precipitations been going down as well?
-
-
-
-### Extremes metrics: number of freezing days
-
-We'll look at a couple different examples of metrics for extremes. First, let's take the number of freezing days: this is defined as the number of days (per year) with minimum temperatures below freezing. Here the data is in degrees Fahrenheit, so we'll select all days where the `TMIN` field in our data table is below 32. Adjusting to be `Tmax` field in our data table is higher than 80
-
-The code block below assigns a new field to the `clim` table, called "freeze": this is defined using the `ifelse` statement. Ifelse is a handy R function which returns one value if a logical statement passed to the function is true, and a different one if the statement is false. In this case, we're telling R to evaluate the statement "is the minimum temperature below 32F?": if yes, clim$freeze is assigned a value of 1, and if no, it's assigned a value of zero.
-
-Once the ifelse statement has been completed, the next thing the code below does is make use of the `group_by` and `summarize` functions to count the number of freezing days! This is done in two steps:
-
-* Grouping the data by year (`clim %>% group_by(year(date))`)
-* Then passing the grouped data to `summarize` and totaling up the number of times during each year when the minimum temperature is below 32 (recall that the `freeze` field is 1 each time this is true! that makes it easy to count days, simply by adding up all the ones)
-
-The times that go along with the (now yearly!) number of freezing days are calculated by finding all the unique years in the dataset (`unique(year(date))`) and assigned to another new field in the data table called `dt`.
-
-Finally, the number of freezing days is plotted using ggplot, as we did for the trends demo.
-
-
-```{r other metrics, echo=TRUE}
-
-clim$heatwave = ifelse(clim$TMAX >= 80, 1, 0)
-clim.wfrdata = clim %>% group_by(year(date)) %>% summarize(ndayfr=sum(heatwave))
-clim.wfrdata$dt = unique(year(date))
-
-ggplot(clim.wfrdata, aes(dt, ndayfr))+geom_point()+labs(y="Number of Heatwave Days")
-```
-
-Note that the trends in mean-state and extreme metrics often go together: from last time, recall that there was a trend toward decreasing minimum daily temperature. How does that affect the frequency of occurrence of freezing days?
-
-
-```{r other metrics, echo=TRUE}
-
-format(as.Date(clim$DATE, format="%m/%d/%Y"),"%Y")
-
-
-clim$heatwavedays = ifelse(clim$TMAX >= 80, 1, 0)
-
-
-
-clim.heatwavedata = clim %>% group_by(year(date)) %>% summarize(ndayfr=sum(heatwavedays))
-
-
-ggplot(clim.wfrdata, aes(date, ndayfr))+geom_point()+labs(y="Number of Heatwave Days")
-```
-
-
-
-### Extremes metrics: hottest day of the year
-
-Looking at the warm end of the temperature distribution, we can now look for trends in the temperature during the hottest day of the year.
-
-This is accomplished using a similar methodology as we used for the freezing days above; again, the group_by function groups the data according to year, then the temperature associated with the hottest day is calculated by applying the `max` function to the `TMAX` field in the data table.
-
-```{r hottest days, echo=TRUE}
-clim.pk = clim %>% group_by(year(date)) %>% summarize(hotday=max(TMAX))
-clim.pk$dt = unique(year(date))
-
-ggplot(clim.pk, aes(dt, hotday))+geom_point()+labs(y="Hottest Day in the Year")
-```
 
 ### Extremes metrics: return periods
+
+A return period refers to the repeat interval between extreme weather events such as earthquakes, floods etc. It is also used to measure the intensity of such events (e.g., the water level when a flood occurs): the longer the return period, the more intensive it is. 
+
 
 In lecture, we discussed the concept of return periods and return levels. Here is how you calculate these things with real data!
 
 We'll specify some reasonable threshold for daily precipitation: say, 1 inch/day. To calculate the return period associated with that threshold, what we do is the following:
-* Use `ifelse` to create a field called "flood" that is 1 when precipitation is above the threshold, and 0 otherwise
+* Use `ifelse` to create a field called "drought" that is 1 when precipitation is below the threshold, and 0 otherwise
 * Store the total number of years by first identifying the total number of unique years, then calculating the length of the array where those unique years are listed
 
 The return period is then the number of years (plus one to include the starting year) divided by the number of times the threshold exceedance has actually occurred. (Note: we have to use the `na.rm=TRUE` flag to prevent NA entries from seeming like they are contributing to the count of threshold exceedances!)
 
 ``` {r return period}
-clim$flood = ifelse(clim$PRCP >= 1, 1, 0)
+droughtdays <- climtidy %>% 
+  mutate(DROUGHT = ifelse(clim$PRCP <= 1, 1, 0)) # If there is less than 1 inch of rain on that day, then put a 1 in the drought column
+
+```
+
+```{r}
+totaldroughtdays <- droughtdays %>% 
+  select(YEAR, DROUGHT) %>% # pull out only year and drought columns
+  group_by(YEAR) %>% # have r recognize that the data can be organized into years
+  summarise(across(c(DROUGHT), # add up the number of days a drought has occurred in each year
+                   list(sum = sum)))
+
+totaldroughtdays # View table
+```
+
+```{r}
+# Loosing my damn mind aka visualizing the precipitation
+
+ggplot(totaldroughtdays, aes(x = YEAR, y = DROUGHT_sum)) +
+  geom_point(color = "brown", size = 2) +
+  geom_text(mapping = aes (label = DROUGHT_sum), 
+            position = position_dodge(width = 0.9), 
+            cex = 3, 
+            vjust = -0.9) +
+  geom_smooth(method = 'lm', se = FALSE, color = "dimgrey") +
+  labs(y = "Number of Days with Less than 1inch of Precipitation",
+       x = "Year",
+       title = "Annual Amount of Drought Days in Thermal California (1950-2022)") + 
+  theme_bw() + 
+  theme(plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(color = "black")) + 
+    ylim(0, 365) +
+  scale_x_continuous(breaks = c(1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))
+
+
+```
+
+
+# But what is actually important is figuring out how long it will be until the next wet period. Since the area has a lot of agriculture buisnesses.
+```{r}
+
+returnperiod=(totaldroughtdays+1)/sum(droughtdays$DROUGHT,na.rm=TRUE)
+
+returnperiod
+
+climtest <- clim
+
+climtest$flood = ifelse(climtest$PRCP >= 1, 1, 0)
 nyrs=length(unique(year(date)))
 
 retper=(nyrs+1)/sum(clim$flood,na.rm=TRUE)
 
 retper
 ```
+
 
 Another note: return *levels* are somewhat more complicated to calculate, since they require fitting the underlying distribution of the data... there are lots of resources out there if you need them though!
