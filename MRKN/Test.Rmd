@@ -224,19 +224,43 @@ b + geom_point(data=climseasonmean, aes(x=YEAR, tmin), col="blue") +
 
 ```
 
+```{r regressionline, echo=TRUE}
+# minimum temperature regression line
 
-Notice how the trends in summer minimum temperature differ from the annual minimum temperature trend!
+slopetminseason=lm(tmin~YEAR, data=climseasonmean) # figure out slope of linear model
+
+summary(slopetminseason) # view linear model numbers
+
+confint(slopetminseason,"YEAR", level=0.95) #add confidence interval for model parameters
+
+ggplot(climseasonmean, aes(x=YEAR, y=tmin)) +
+  stat_summary(fun.y="mean", geom="point", col="blue", size=4) +
+  theme(axis.text=element_text(size=14, face="bold"), 
+        axis.title=element_text(size=14, face="bold")) +
+  geom_smooth(method="lm")
+```
+
+```{r regressionline, echo=TRUE}
+# minimum temperature regression line
+
+slopetmaxseason=lm(tmax~YEAR, data=climseasonmean) # figure out slope of linear model
+
+summary(slopetmaxseason) # view linear model numbers
+
+confint(slopetmaxseason,"YEAR", level=0.95) #add confidence interval for model parameters
+
+ggplot(climseasonmean, aes(x=YEAR, y=tmax)) +
+  stat_summary(fun.y="mean", geom="point", col="red", size=4) +
+  theme(axis.text=element_text(size=14, face="bold"), 
+        axis.title=element_text(size=14, face="bold")) +
+  geom_smooth(method="lm") +
+  labs(y = "Annual Mean Temperature",
+       x = "Year",
+       title = "Linear Regression of Annual Mean Summer Temperatures in Thermal, CA (1950-2022)")
+```
 
 
 # look only at summer
-clim.summer = subset(clim.byseason, clim.byseason$season==3)
-tmp=unique(year(date))
-clim.summer$wy = tmp[1:length(tmp)-1]
 
-ggplot(clim.summer, aes(x=wy, y=tmin)) + stat_summary(fun.y="mean", geom="point", col="red", size=4)+theme(axis.text=element_text(size=14, face="bold"), axis.title=element_text(size=14, face="bold")) + geom_smooth(method="lm")+labs(y=" Summer Minimum Daily Temperature C")
-
-res=lm(tmax~wy, data=clim.summer)
-summary(res)
-confint(res,"wy", level=0.95)
 
 
