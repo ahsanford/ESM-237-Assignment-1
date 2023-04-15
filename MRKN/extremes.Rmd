@@ -1,8 +1,11 @@
 ---
 title: "Climate Extremes Analysis"
 author: "Abigail Sanford, Julia Bickford, Andrea Cornelius"
-date: "4/15/2023"
-output: html_document
+date: "4/17/2023"
+output:
+  html_document:
+    toc: yes
+    code_folding: hide
 ---
 
 # Read in the Data
@@ -28,7 +31,7 @@ climtidy <- clim %>%
 
 ```
 
-## How many heat wave days are there per year?
+# How many heat wave days are there per year?
 
 ### Heatwave Threshold set to 80F
 ```{r}
@@ -257,6 +260,12 @@ ggplot(heatwavedaystidy120, aes(x = YEAR, y = HEATWAVE_sum)) +
 
 
 ```
+
+# How long do the heatwaves last, when there is a heat wave?
+
+
+
+# How long does summer last each year?
 
 
 
