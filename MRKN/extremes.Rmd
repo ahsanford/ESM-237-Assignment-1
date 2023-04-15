@@ -34,10 +34,15 @@ We can look at the data that we've read in using the `head` command; this will d
 
 
 ```{r readdata}
-clim = read.table("thermal_precip_temp.csv",fill=TRUE,sep=',',header=T)
-head(clim)
+clim <- read.table("thermal_precip_temp.csv", fill=TRUE, sep=',', header=T)
 
-date=as.Date(clim$DATE)
+head(clim) #this lets us look at our data table in the Rmarkdown rather than having to navigate to the data table in the environment
+
+
+
+date <- as.Date(clim$DATE)
+
+year <- as.numeric(format(date,'%Y'))
 
 ```
 
@@ -69,6 +74,23 @@ ggplot(clim.wfrdata, aes(dt, ndayfr))+geom_point()+labs(y="Number of Heatwave Da
 Note that the trends in mean-state and extreme metrics often go together: from last time, recall that there was a trend toward decreasing minimum daily temperature. How does that affect the frequency of occurrence of freezing days?
 
 
+```{r other metrics, echo=TRUE}
+
+format(as.Date(clim$DATE, format="%m/%d/%Y"),"%Y")
+
+
+clim$heatwavedays = ifelse(clim$TMAX >= 80, 1, 0)
+
+
+
+clim.heatwavedata = clim %>% group_by(year(date)) %>% summarize(ndayfr=sum(heatwavedays))
+
+
+ggplot(clim.wfrdata, aes(date, ndayfr))+geom_point()+labs(y="Number of Heatwave Days")
+```
+
+
+
 ### Extremes metrics: hottest day of the year
 
 Looking at the warm end of the temperature distribution, we can now look for trends in the temperature during the hottest day of the year.
@@ -97,6 +119,8 @@ clim$flood = ifelse(clim$PRCP >= 1, 1, 0)
 nyrs=length(unique(year(date)))
 
 retper=(nyrs+1)/sum(clim$flood,na.rm=TRUE)
+
+retper
 ```
 
 Another note: return *levels* are somewhat more complicated to calculate, since they require fitting the underlying distribution of the data... there are lots of resources out there if you need them though!
