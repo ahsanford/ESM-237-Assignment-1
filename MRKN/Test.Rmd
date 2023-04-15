@@ -27,7 +27,8 @@ climtrendtidy <- climtrend %>%
   select(DATE, PRCP, TMAX, TMIN) %>% # selected the columns I want to keep which include date, precipitation, temperature max, and temperature minimum
   mutate(DATE = mdy(DATE)) %>% # converts the date column into the 'date' class
   mutate(YEAR = year(DATE)) %>% # Create new column with just the year in it
-  mutate(MONTH = month(DATE)) # create new column with just the month in it
+  mutate(MONTH = month(DATE))%>% # create new column with just the month in it
+  drop_na() 
 ```
 
 
@@ -183,22 +184,24 @@ We reject the null hypothesis due to a low p-value that is statistically signifi
 An alternative approach to aggregation (mean by year)
 is to look at a particular season, lets say we want to look only at summer (July and August)
 
+Are the hottest months getting hotter on average. need to look at average maximum hottest temp, in the months we are calling summer. 
+
 
 ```{r alternative, echo=TRUE}
 # create a variable
 climtrendtidy$season = 
   ifelse((climtrendtidy$MONTH) %in% c(1,2,3,11,12), 1, 2)
 
-climatetrendtidy
- 
- ifelse((climtrendtidy$MONTH) %in% c(4,5,6,7,8,9,10), 2))
-  
+
+climseasonmean <- climtrendtidy %>%
+  group_by(YEAR, season) %>%
+  summarize(tmax= mean(TMAX), 
+            tmin= mean(TMIN),
+            precip= sum(PRCP))
+
+climseasonmean
   
 
-mutate(season = ifelse(MONTH) %in%
-           c)
-clim$season = ifelse(month(date) %in% c(12,1,2), 1, ifelse(month(date) %in% c(3:5),2, ifelse(month(date) %in% c(6:8),3,4)))
-clim.byseason = clim %>% group_by(year(date),season) %>% summarize(tmax=mean(TMAX), tmin=mean(TMIN), precip=sum(PRCP))
 
 # look only at summer
 clim.summer = subset(clim.byseason, clim.byseason$season==3)
