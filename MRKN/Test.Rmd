@@ -36,22 +36,25 @@ climtrendtidy <- climtrend %>%
 Make a plot to see what data is missing.
 
 Daily data of air temperature 
-```{r dailyplots, echo=TRUE}
+```{r}
 
 ggplot(climtrendtidy, aes(DATE, TMAX)) + 
   geom_line() + 
   labs(y="Daily Maximum Temperature (degrees F)", 
-       x="Date")
+       x="Date",
+       title = "Daily Maximum Temperatures in Thermal, CA (1950-2022)")
 
 ggplot(climtrendtidy, aes(DATE, TMIN)) + 
   geom_line() +
   labs(y="Daily Minimum Temperature (degrees F)",
-       x="Date")
+       x="Date",
+       title = "Daily Minimum Temperatures in Thermal, CA (1950-2022)")
 
 ggplot(climtrendtidy, aes(DATE, PRCP)) + 
   geom_line() +
   labs(y="Daily Rainfall (in)",
-       x="Date")
+       x="Date",
+       title = "Daily Precipitation in Thermal, CA (1950-2022)")
 
 ```
 
@@ -60,7 +63,7 @@ we need to check this: "Some values are "NA" in temperature and precipitation; t
 
 ### Determining whether there is a trend
 
-```{r annual, echo=TRUE}
+```{r}
 
 climyearmean <- climtrendtidy %>%
   group_by(YEAR) %>%
@@ -89,13 +92,21 @@ Notice the different behavior of the min and max temperatures!
 
 OK now let's put a trend line on this thing.
 
-```{r wy, echo=TRUE}
+```{r}
 
 # now lets add a trend line
 
 a + geom_point(data=climyearmean, aes(x=YEAR, tmin), col="blue") + 
-  stat_smooth(data=climyearmean, aes(x=YEAR, tmin), col="blue", method="lm")
-
+  stat_smooth(data=climyearmean, aes(x=YEAR, tmin), col="blue", method="lm") + 
+  labs(y="Minimum and Maximum Temperatures (F)",
+       x="Year",
+       title = "Average Annual Temperatures in Thermal, CA (1950-2022)") + 
+  theme_bw() + 
+  theme(plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(color = "black")) +
+  scale_x_continuous(breaks = c(1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))
 
 ```
 
@@ -103,7 +114,7 @@ a + geom_point(data=climyearmean, aes(x=YEAR, tmin), col="blue") +
 
 Now let's calculate the slope (or how quickly temperatures are rising; we do this with linear regression)
 
-```{r regressionline, echo=TRUE}
+```{r}
 # minimum temperature regression line
 
 slopetmin=lm(tmin~YEAR, data=climyearmean) # figure out slope of linear model
@@ -119,7 +130,7 @@ ggplot(climyearmean, aes(x=YEAR, y=tmin)) +
   geom_smooth(method="lm")
 ```
 
-```{r regressionline, echo=TRUE}
+```{r}
 # minimum temperature regression line
 
 slopetmax=lm(tmax~YEAR, data=climyearmean) # figure out slope of linear model
@@ -150,7 +161,7 @@ is to look at a particular season, lets say we want to look only at summer (July
 Are the hottest months getting hotter on average. need to look at average maximum hottest temp, in the months we are calling summer. 
 
 
-```{r alternative, echo=TRUE}
+```{r}
 # create a variable
 climtrendtidy$season = 
   ifelse((climtrendtidy$MONTH) %in% c(1,2,3,11,12), 1, 2)
@@ -183,11 +194,20 @@ b = ggplot(climseasonmean, aes(x=YEAR, tmax)) +
   geom_point(data=climseasonmean, aes(x=YEAR, tmin), col="blue")
 
 b + geom_point(data=climseasonmean, aes(x=YEAR, tmin), col="blue") + 
-  stat_smooth(data=climseasonmean, aes(x=YEAR, tmin), col="blue", method="lm")
+  stat_smooth(data=climseasonmean, aes(x=YEAR, tmin), col="blue", method="lm") +
+  labs(y="Minimum and Maximum Temperatures (F)",
+       x="Year",
+       title = "Average Summer Temperatures in Thermal, CA (1950-2022)") + 
+  theme_bw() + 
+  theme(plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(color = "black")) +
+  scale_x_continuous(breaks = c(1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))
 
 ```
 
-```{r regressionline, echo=TRUE}
+```{r}
 # minimum temperature regression line
 
 slopetminseason=lm(tmin~YEAR, data=climseasonmean) # figure out slope of linear model
@@ -203,7 +223,7 @@ ggplot(climseasonmean, aes(x=YEAR, y=tmin)) +
   geom_smooth(method="lm")
 ```
 
-```{r regressionline, echo=TRUE}
+```{r}
 # minimum temperature regression line
 
 slopetmaxseason=lm(tmax~YEAR, data=climseasonmean) # figure out slope of linear model
