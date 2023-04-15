@@ -267,6 +267,8 @@ ggplot(heatwavedaystidy120, aes(x = YEAR, y = HEATWAVE_sum)) +
 
 # How long does summer last each year?
 
+# Has precipitations been going down as well?
+
 
 
 ### Extremes metrics: number of freezing days
