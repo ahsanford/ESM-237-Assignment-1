@@ -19,16 +19,14 @@ library(tidyverse)
 ```
 
 ```{r readdata}
-clim <- read.table("thermal_precip_temp.csv", fill=TRUE, sep=',', header=T) # read in the data
+climtherm <- read.table("thermal_precip_temp.csv", fill=TRUE, sep=',', header=T) # read in the data
   
-head(clim) #this lets us look at our data table in the Rmarkdown rather than having to navigate to the data table in the environment
+head(climtherm) #this lets us look at our data table in the Rmarkdown rather than having to navigate to the data table in the environment
 
-climtidy <- clim %>% 
+climtidy <- climtherm %>% 
   select(DATE, PRCP, TMAX, TMIN) %>% # selected the columns I want to keep which include date, precipitation, temperature max, and temperature minimum
   mutate(DATE = mdy(DATE)) %>% # converts the date column into the 'date' class
   mutate(YEAR = year(DATE)) # Create new column with just the year in it
-  
-
 
 ```
 
@@ -37,7 +35,7 @@ climtidy <- clim %>%
 ### Heatwave Threshold set to 80F
 ```{r}
 heatwavedays <- climtidy %>% 
-  mutate(HEATWAVE = ifelse(clim$TMAX >= 80, 1, 0)) %>% # created a new column that puts a 1 down if temp was 80F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 80 to the new heatwave threshold
+  mutate(HEATWAVE = ifelse(climtidy$TMAX >= 80, 1, 0)) %>% # created a new column that puts a 1 down if temp was 80F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 80 to the new heatwave threshold
   drop_na() # remove NA values, this removed 26 observations
   
   
@@ -60,10 +58,6 @@ heatwavedaystidy # view table
 
 ggplot(heatwavedaystidy, aes(x = YEAR, y = HEATWAVE_sum)) +
   geom_point(color = "darkorange4", size = 2) +
-  geom_text(mapping = aes (label = HEATWAVE_sum), 
-            position = position_dodge(width = 0.9), 
-            cex = 3, 
-            vjust = -0.9) +
   geom_smooth(method = 'lm', se = FALSE, color = "dimgrey") +
   labs(y = "Number of Heatwave Days (Threshold 80F)",
        x = "Year",
@@ -84,7 +78,7 @@ There is a slight increasing trend in the amount of heatwave days per year, give
 ### Heatwave Threshold set to 90F
 ```{r}
 heatwavedays90 <- climtidy %>% 
-  mutate(HEATWAVE = ifelse(clim$TMAX >= 90, 1, 0)) %>% # created a new column that puts a 1 down if temp was 90F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 90 to the new heatwave threshold
+  mutate(HEATWAVE = ifelse(climtidy$TMAX >= 90, 1, 0)) %>% # created a new column that puts a 1 down if temp was 90F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 90 to the new heatwave threshold
   drop_na() # remove NA values
 
 ```
@@ -99,6 +93,8 @@ heatwavedaystidy90 <- heatwavedays90 %>%
                    list(sum = sum)))
 
 heatwavedaystidy90 # view table
+
+# create a chart, but only include the top 10 heat wave years
 ```
 
 
@@ -130,7 +126,7 @@ ggplot(heatwavedaystidy90, aes(x = YEAR, y = HEATWAVE_sum)) +
 ### Heatwave Threshold set to 100F
 ```{r}
 heatwavedays100 <- climtidy %>% 
-  mutate(HEATWAVE = ifelse(clim$TMAX >= 100, 1, 0)) %>% # created a new column that puts a 1 down if temp was 100F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 100 to the new heatwave threshold
+  mutate(HEATWAVE = ifelse(climtidy$TMAX >= 100, 1, 0)) %>% # created a new column that puts a 1 down if temp was 100F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 100 to the new heatwave threshold
   drop_na() # remove NA values
 
 ```
@@ -175,7 +171,7 @@ ggplot(heatwavedaystidy100, aes(x = YEAR, y = HEATWAVE_sum)) +
 ### Heatwave Threshold set to 110F
 ```{r}
 heatwavedays110 <- climtidy %>% 
-  mutate(HEATWAVE = ifelse(clim$TMAX >= 110, 1, 0)) %>% # created a new column that puts a 1 down if temp was 110F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 110 to the new heatwave threshold
+  mutate(HEATWAVE = ifelse(climtidy$TMAX >= 110, 1, 0)) %>% # created a new column that puts a 1 down if temp was 110F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 110 to the new heatwave threshold
   drop_na() # remove NA values
 
 ```
@@ -220,7 +216,7 @@ ggplot(heatwavedaystidy110, aes(x = YEAR, y = HEATWAVE_sum)) +
 ### Heatwave Threshold set to 120F
 ```{r}
 heatwavedays120 <- climtidy %>% 
-  mutate(HEATWAVE = ifelse(clim$TMAX >= 120, 1, 0)) %>% # created a new column that puts a 1 down if temp was 80F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 80 to the new heatwave threshold
+  mutate(HEATWAVE = ifelse(climtidy$TMAX >= 120, 1, 0)) %>% # created a new column that puts a 1 down if temp was 80F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 80 to the new heatwave threshold
   drop_na() # remove NA values
 
 ```
@@ -267,7 +263,7 @@ ggplot(heatwavedaystidy120, aes(x = YEAR, y = HEATWAVE_sum)) +
 
 ### Extremes metrics: return periods
 
-A return period refers to the repeat interval between extreme weather events such as earthquakes, floods etc. It is also used to measure the intensity of such events (e.g., the water level when a flood occurs): the longer the return period, the more intensive it is. 
+
 
 
 In lecture, we discussed the concept of return periods and return levels. Here is how you calculate these things with real data!
@@ -280,8 +276,9 @@ The return period is then the number of years (plus one to include the starting 
 
 ``` {r return period}
 droughtdays <- climtidy %>% 
-  mutate(DROUGHT = ifelse(clim$PRCP <= 1, 1, 0)) # If there is less than 1 inch of rain on that day, then put a 1 in the drought column
+  mutate(DROUGHT = ifelse(climtidy$PRCP <= 1, 1, 0)) %>% # If there is less than 1 inch of rain on that day, then put a 1 in the drought column
 
+  drop_na() 
 ```
 
 ```{r}
@@ -319,6 +316,17 @@ ggplot(totaldroughtdays, aes(x = YEAR, y = DROUGHT_sum)) +
 ```
 
 
+```{r}
+totaldroughtdays <- droughtdays %>% 
+  select(YEAR, DROUGHT) %>% # pull out only year and drought columns
+  group_by(YEAR) %>% # have r recognize that the data can be organized into years
+  summarise(across(c(DROUGHT), # add up the number of days a drought has occurred in each year
+                   list(sum = sum)))
+
+totaldroughtdays # View table
+```
+
+
 # But what is actually important is figuring out how long it will be until the next wet period. Since the area has a lot of agriculture buisnesses.
 ```{r}
 
@@ -326,15 +334,28 @@ returnperiod=(totaldroughtdays+1)/sum(droughtdays$DROUGHT,na.rm=TRUE)
 
 returnperiod
 
-climtest <- clim
 
-climtest$flood = ifelse(climtest$PRCP >= 1, 1, 0)
+```
+
+```{r}
+climtest <- climtherm
+
+climtest$drought = ifelse(climtest$PRCP <= 1, 1, 0)
 nyrs=length(unique(year(date)))
 
-retper=(nyrs+1)/sum(clim$flood,na.rm=TRUE)
+retper=(nyrs+1)/sum(climtest$drought,na.rm=TRUE)
+
 
 retper
 ```
+We'll specify some reasonable threshold for drought precipitation amounts is less than 1 inch/day. To calculate the return period associated with that threshold, what we do is the following:
 
+
+A return period (once every 500 years) refers to the repeat interval between drought events. It is also used to measure the intensity of such events (e.g., the water level when a flood occurs): the longer the return period, the more intensive it is. 
+
+
+* Use `ifelse` to create a field called "drought" that is 1 when precipitation is below the threshold, and 0 otherwise
+
+The return period is then the number of years (plus one to include the starting year) divided by the number of times the threshold exceedance has actually occurred. (Note: we have to use the `na.rm=TRUE` flag to prevent NA entries from seeming like they are contributing to the count of threshold exceedances!)
 
 Another note: return *levels* are somewhat more complicated to calculate, since they require fitting the underlying distribution of the data... there are lots of resources out there if you need them though!
