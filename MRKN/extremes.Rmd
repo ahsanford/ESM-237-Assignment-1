@@ -57,7 +57,7 @@ heatwavedays <- climtidy %>%
 ```
 
 ```{r}
-# visualize the data
+# look at data in a chart
 
 heatwavedaystidy <- heatwavedays %>% 
   select(YEAR, HEATWAVE) %>% # pull out only year and heatwave columns
@@ -67,6 +67,28 @@ heatwavedaystidy <- heatwavedays %>%
 
 heatwavedaystidy # view table
 ```
+
+```{r}
+# visualize heatwave days in a graph
+
+ggplot(heatwavedaystidy, aes(x = YEAR, y = HEATWAVE_sum)) +
+  geom_point(color = "darkorange4", size = 4) +
+  geom_text(mapping = aes (label = HEATWAVE_sum), 
+            position = position_dodge(width = 0.9), 
+            cex = 3, 
+            vjust = -0.9) +
+  labs(y = "Number of Heatwave Days",
+       x = "Year",
+       title = "Annual Amount of Heatwave Days in Thermal Caliofornia (1998-2023)") + 
+  theme_bw() + 
+  theme(plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(color = "black"))
+
+
+```
+
 
 
 ### Extremes metrics: number of freezing days
