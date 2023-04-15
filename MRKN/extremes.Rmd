@@ -25,7 +25,7 @@ head(clim) #this lets us look at our data table in the Rmarkdown rather than hav
 
 climtidy <- clim %>% 
   select(DATE, PRCP, TMAX, TMIN) %>% # selected the columns I want to keep which include date, precipitation, temperature max, and temperature minimum
-  mutate(DATE = mdy(DATE)) %>% # converts the date column into the 'date' class
+  mutate(DATE = ymd(DATE)) %>% # converts the date column into the 'date' class
   mutate(YEAR = year(DATE)) # Create new column with just the year in it
 
 
@@ -37,7 +37,7 @@ climtidy <- clim %>%
 ```{r}
 heatwavedays <- climtidy %>% 
   mutate(HEATWAVE = ifelse(clim$TMAX >= 80, 1, 0)) %>% # created a new column that puts a 1 down if temp was 80F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 80 to the new heatwave threshold
-  drop_na() # remove NA values
+  drop_na() # remove NA values, this removed 12,276 observations...do we need to anything about that
   
   
 ```
@@ -58,7 +58,7 @@ heatwavedaystidy # view table
 # visualize heatwave days in a graph
 
 ggplot(heatwavedaystidy, aes(x = YEAR, y = HEATWAVE_sum)) +
-  geom_point(color = "darkorange4", size = 4) +
+  geom_point(color = "darkorange4", size = 2) +
   geom_text(mapping = aes (label = HEATWAVE_sum), 
             position = position_dodge(width = 0.9), 
             cex = 3, 
@@ -72,8 +72,8 @@ ggplot(heatwavedaystidy, aes(x = YEAR, y = HEATWAVE_sum)) +
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(color = "black")) + 
-    ylim(0, 365) +
-  scale_x_continuous(breaks = c(1998, 2002, 2006, 2010, 2014, 2018, 2022))
+    ylim(0, 500) +
+  scale_x_continuous(breaks = c(1945, 1955, 1965, 1975, 1985, 1995, 2005, 2015))
 
 
 ```
@@ -247,7 +247,7 @@ ggplot(heatwavedaystidy120, aes(x = YEAR, y = HEATWAVE_sum)) +
             cex = 3, 
             vjust = -0.9) +
   geom_smooth(method = 'lm', se = FALSE, color = "dimgrey") +
-  labs(y = "Number of Heatwave Days (Threshold 100F)",
+  labs(y = "Number of Heatwave Days (Threshold 120F)",
        x = "Year",
        title = "Annual Amount of Heatwave Days in Thermal California (1998-2022)") + 
   theme_bw() + 
