@@ -113,9 +113,10 @@ ggplot(climyearmean, aes(x=YEAR, tmax)) +
 
 a = ggplot(climyearmean, aes(x=YEAR, tmax)) + 
   geom_point(col="red") +
+  stat_smooth(method="lm", col="red") +
   scale_y_continuous(limits=c(min(climyearmean$tmin),
-                              max(climyearmean$tmax)))+
-geom_point(data=climyearmean, aes(x=YEAR, tmin), col="blue")
+                              max(climyearmean$tmax))) + 
+  geom_point(data=climyearmean, aes(x=YEAR, tmin), col="blue")
 
 ```
 
@@ -126,9 +127,10 @@ OK now let's put a trend line on this thing.
 ```{r wy, echo=TRUE}
 
 # now lets add a trend line
-a =a+stat_smooth(method="lm", col="red")
-a
-a+ stat_smooth(data=clim.mwy, aes(x=dt,tmin), col="blue", method="lm")
+
+a + geom_point(data=climyearmean, aes(x=YEAR, tmin), col="blue") + 
+  stat_smooth(data=climyearmean, aes(x=YEAR, tmin), col="blue", method="lm")
+
 
 ```
 
