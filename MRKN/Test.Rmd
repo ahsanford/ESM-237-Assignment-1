@@ -26,7 +26,8 @@ head(climtrend) # read in the data
 climtrendtidy <- climtrend %>% 
   select(DATE, PRCP, TMAX, TMIN) %>% # selected the columns I want to keep which include date, precipitation, temperature max, and temperature minimum
   mutate(DATE = mdy(DATE)) %>% # converts the date column into the 'date' class
-  mutate(YEAR = year(DATE)) # Create new column with just the year in it
+  mutate(YEAR = year(DATE)) %>% # Create new column with just the year in it
+  mutate(MONTH = month(DATE)) # create new column with just the month in it
 ```
 
 
@@ -185,6 +186,14 @@ is to look at a particular season, lets say we want to look only at summer (July
 
 ```{r alternative, echo=TRUE}
 # create a variable
+climtrendtidy$season = 
+  ifelse((climtrendtidy$MONTH) %in% c(1,2,3,11,12), 1, 
+  ifelse((climtrendtidy$MONTH) %in% c(4,5,6,7,8,9,10), 2))
+  
+  
+
+mutate(season = ifelse(MONTH) %in%
+           c)
 clim$season = ifelse(month(date) %in% c(12,1,2), 1, ifelse(month(date) %in% c(3:5),2, ifelse(month(date) %in% c(6:8),3,4)))
 clim.byseason = clim %>% group_by(year(date),season) %>% summarize(tmax=mean(TMAX), tmin=mean(TMIN), precip=sum(PRCP))
 
