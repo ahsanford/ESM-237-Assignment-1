@@ -50,19 +50,22 @@ climtidy <- clim %>%
 
 ```{r}
 heatwavedays <- climtidy %>% 
-  mutate(HEATWAVE = ifelse(clim$TMAX >= 80, 1, 0)) # created a new column that puts a 1 down if temp was 80F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 80 to the new heatwave threshold
+  mutate(HEATWAVE = ifelse(clim$TMAX >= 80, 1, 0)) %>% # created a new column that puts a 1 down if temp was 80F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 80 to the new heatwave threshold
+  drop_na() # remove NA values
+  
+  
 ```
 
 ```{r}
 # visualize the data
 
 heatwavedaystidy <- heatwavedays %>% 
-  select(YEAR, HEATWAVE) %>% #
-  group_by(YEAR) %>% 
-  summarise(across(c(HEATWAVE),
+  select(YEAR, HEATWAVE) %>% # pull out only year and heatwave columns
+  group_by(YEAR) %>% # have r recognize that the data can be organized into years
+  summarise(across(c(HEATWAVE), # add up the number of days a heat wave has occurred in each year
                    list(sum = sum)))
 
-heatwavedaystidy
+heatwavedaystidy # view table
 ```
 
 
