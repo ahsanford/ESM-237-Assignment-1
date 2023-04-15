@@ -23,9 +23,11 @@ head(climtrend) # read in the data
 
 
 ```{r asdate}
-date=as.Date(climtrend$DATE) # command transforms the DATE field in climtrend table into an R-formatted date array that R knows how to do things with
-
+climtrendtidy <- climtrend %>% 
+  select(DATE, PRCP, TMAX, TMIN) %>% # selected the columns I want to keep which include date, precipitation, temperature max, and temperature minimum
+  mutate(DATE = mdy(DATE)) # converts the date column into the 'date' class
 ```
+
 
 ### Running basic quality checks
 Make a plot to see what data is missing.
@@ -33,15 +35,24 @@ Make a plot to see what data is missing.
 Daily data of air temperature 
 ```{r dailyplots, echo=TRUE}
 
-ggplot(climtrend, aes(date, TMAX))+geom_line()+ labs(y="Daily Maximum Temperature (degrees F)", x="Date")
+ggplot(climtrendtidy, aes(DATE, TMAX)) + 
+  geom_line() + 
+  labs(y="Daily Maximum Temperature (degrees F)", 
+       x="Date")
 
-ggplot(climtrend, aes(date, TMIN))+geom_line()+ labs(y="Daily Minimum Temperature (degrees F)", x="Date")
+ggplot(climtrendtidy, aes(DATE, TMIN)) + 
+  geom_line() +
+  labs(y="Daily Minimum Temperature (degrees F)",
+       x="Date")
 
-ggplot(climtrend, aes(date, PRCP))+geom_line()+ labs(y="Daily Rainfall (in)", x="Date")
+ggplot(climtrendtidy, aes(DATE, PRCP)) + 
+  geom_line() +
+  labs(y="Daily Rainfall (in)",
+       x="Date")
 
 ```
 
-we need to check this: "Some values are "NA" in temperature and precipitation; these have been trimmed automatically by ggplot, but this may not be the case for all functions. In general, you'll want to check meta data to see how missing data is labelled: -999 or NA are common choices." 
+we need to check this: "Some values are "NA" in temperature and precipitation; these have been trimmed automatically by ggplot, but this may not be the case for all functions. In general, you'll want to check meta data to see how missing data is labelled: -999 or NA are common choices." Ours is done as NA
 
 ### Filling in missing data
 
@@ -61,7 +72,7 @@ Some demonstrations of how to do this in R are shown in the code block below:
 ```{r dailyplots.filled, echo=TRUE}
 
 # find the row with missing data
-fillrow = which(is.na(clim$PRCP))
+fillrow = which(is.na(climtrendtidy$PRCP))
 # display the rows to see how many there are
 fillrow
 
