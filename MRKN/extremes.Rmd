@@ -103,10 +103,6 @@ heatwavedaystidy90 # view table
 
 ggplot(heatwavedaystidy90, aes(x = YEAR, y = HEATWAVE_sum)) +
   geom_point(color = "darkorange4", size = 2) +
-  geom_text(mapping = aes (label = HEATWAVE_sum), 
-            position = position_dodge(width = 0.9), 
-            cex = 3, 
-            vjust = -0.9) +
   geom_smooth(method = 'lm', se = FALSE, color = "dimgrey") +
   labs(y = "Number of Heatwave Days (Threshold 90F)",
        x = "Year",
@@ -258,6 +254,9 @@ ggplot(heatwavedaystidy120, aes(x = YEAR, y = HEATWAVE_sum)) +
 
 ```
 
+
+
+
 # How many days with precipitation
 
 
@@ -366,6 +365,9 @@ retper=(nyrs+1)/sum(climtest$drought,na.rm=TRUE)
 
 retper
 ```
+
+
+
 We'll specify some reasonable threshold for drought precipitation amounts is less than 1 inch/day. To calculate the return period associated with that threshold, what we do is the following:
 
 
