@@ -77,17 +77,17 @@ fillrow = which(is.na(climtrendtidy$PRCP))
 fillrow
 
 # fill in data in the missing rows with zeros
-clim$PRCP[fillrow]=0
+climtrendtidy$PRCP[fillrow]=0
 # replot to make sure it works
-ggplot(clim, aes(date, PRCP))+geom_line()+ labs(y="Daily rainfall (mm)", x="Date")
+ggplot(climtrendtidy, aes(DATE, PRCP))+geom_line()+ labs(y="Daily rainfall (inch)", x="Date")
 
 
 # find rows with missing data
 # temperature: values are either NA or not reasonable for that location (here, below 40F)
-fillrow = which(is.na(clim$TMAX) | clim$TMAX < 40)
+fillrow = which(is.na(climtrendtidy$TMAX) | climtrendtidy$TMAX < 40)
 fillrow = fillrow[2:length(fillrow)]
-clim$TMAX[fillrow]=(clim$TMAX[fillrow+1]+clim$TMAX[fillrow-1])/2
-ggplot(clim, aes(date, clim$TMAX))+geom_line()+ labs(y="Daily Maximum Temperature (degrees F)", x="Date")
+climtrendtidy$TMAX[fillrow]=(climtrendtidy$TMAX[fillrow+1]+climtrendtidy$TMAX[fillrow-1])/2
+ggplot(climtrendtidy, aes(DATE, climtrendtidy$TMAX))+geom_line()+ labs(y="Daily Maximum Temperature (degrees F)", x="Date")
 
 ```
 
