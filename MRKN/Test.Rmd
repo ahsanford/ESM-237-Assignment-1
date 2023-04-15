@@ -187,8 +187,11 @@ is to look at a particular season, lets say we want to look only at summer (July
 ```{r alternative, echo=TRUE}
 # create a variable
 climtrendtidy$season = 
-  ifelse((climtrendtidy$MONTH) %in% c(1,2,3,11,12), 1, 
-  ifelse((climtrendtidy$MONTH) %in% c(4,5,6,7,8,9,10), 2))
+  ifelse((climtrendtidy$MONTH) %in% c(1,2,3,11,12), 1, 2)
+
+climatetrendtidy
+ 
+ ifelse((climtrendtidy$MONTH) %in% c(4,5,6,7,8,9,10), 2))
   
   
 
