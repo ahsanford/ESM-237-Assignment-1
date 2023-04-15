@@ -21,12 +21,15 @@ library(tidyverse)
 ```{r readdata}
 clim <- read.table("thermal_precip_temp.csv", fill=TRUE, sep=',', header=T) # read in the data
 
+filter(clim, NAME == "DESERT RESORTS REGIONAL AIRPORT, CA US") # Only keep data from the station that has both temp and precip info
+  
 head(clim) #this lets us look at our data table in the Rmarkdown rather than having to navigate to the data table in the environment
 
 climtidy <- clim %>% 
   select(DATE, PRCP, TMAX, TMIN) %>% # selected the columns I want to keep which include date, precipitation, temperature max, and temperature minimum
   mutate(DATE = ymd(DATE)) %>% # converts the date column into the 'date' class
   mutate(YEAR = year(DATE)) # Create new column with just the year in it
+  
 
 
 ```
