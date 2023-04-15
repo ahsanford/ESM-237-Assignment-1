@@ -60,10 +60,10 @@ Finally, the number of freezing days is plotted using ggplot, as we did for the 
 ```{r other metrics, echo=TRUE}
 
 clim$heatwave = ifelse(clim$TMAX >= 80, 1, 0)
-clim.wfrdata = clim %>% group_by(year(date)) %>% summarize(ndayfr=sum(freeze))
+clim.wfrdata = clim %>% group_by(year(date)) %>% summarize(ndayfr=sum(heatwave))
 clim.wfrdata$dt = unique(year(date))
 
-ggplot(clim.wfrdata, aes(dt, ndayfr))+geom_point()+labs(y="Number of Freezing Days")
+ggplot(clim.wfrdata, aes(dt, ndayfr))+geom_point()+labs(y="Number of Heatwave Days")
 ```
 
 Note that the trends in mean-state and extreme metrics often go together: from last time, recall that there was a trend toward decreasing minimum daily temperature. How does that affect the frequency of occurrence of freezing days?
@@ -75,7 +75,7 @@ Looking at the warm end of the temperature distribution, we can now look for tre
 
 This is accomplished using a similar methodology as we used for the freezing days above; again, the group_by function groups the data according to year, then the temperature associated with the hottest day is calculated by applying the `max` function to the `TMAX` field in the data table.
 
-```
+```{r hottest days, echo=TRUE}
 clim.pk = clim %>% group_by(year(date)) %>% summarize(hotday=max(TMAX))
 clim.pk$dt = unique(year(date))
 
