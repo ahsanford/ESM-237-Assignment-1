@@ -5,33 +5,15 @@ date: "4/15/2023"
 output: html_document
 ---
 
+# Read in the Data
+
 ```{r setup}
 knitr::opts_chunk$set(echo = TRUE)
 
+# load pacakges
 library(lubridate)
 library(tidyverse)
 ```
-### Getting Started: set up environment
-
-The packages we will need for this analysis are (same as for the trend demo):
-
-* lubridate: makes it easier to work with date information and use it in plotting
-* tidyverse: a suite of R packages designed to optimize working with "tidy" data. This package contains other ones, including the `ggplot2` package that helps with making nice-looking graphs!
-
-
-### Reading in data
-
-The first thing to do is to read in some data. Here, I've chosen the Lake Cachuma station from the National Centers for Environmental Information website:
-https://www.ncdc.noaa.gov/cdo-web/datatools/findstation
-
-This is the same dataset used for the trends demo. Let's read in the data again!
-
-In the code block below, the read.table command loads the CSV file provided by NCDC into a table structure in R, here called 'clim'; this particular file happens to be comma-delimited, so we specify `sep=','` to let R determine which data fits in separate entries in the table. We can also fill in empty entries with "NA" by setting `fill=TRUE`, and let R make sense of the file header by setting `header=T`.
-
-Once the data has been read in, the as.Date command then transforms the DATE field in that table into an R-formatted date array that R knows how to do things with.
-
-We can look at the data that we've read in using the `head` command; this will display the first few rows of the table so we can see if everything makes sense.
-
 
 ```{r readdata}
 clim <- read.table("thermal_precip_temp.csv", fill=TRUE, sep=',', header=T) # read in the data
@@ -46,8 +28,9 @@ climtidy <- clim %>%
 
 ```
 
-### How many heat wave days are there per year?
+## How many heat wave days are there per year?
 
+### Heatwave Threshold set to 80F
 ```{r}
 heatwavedays <- climtidy %>% 
   mutate(HEATWAVE = ifelse(clim$TMAX >= 80, 1, 0)) %>% # created a new column that puts a 1 down if temp was 80F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 80 to the new heatwave threshold
@@ -77,14 +60,200 @@ ggplot(heatwavedaystidy, aes(x = YEAR, y = HEATWAVE_sum)) +
             position = position_dodge(width = 0.9), 
             cex = 3, 
             vjust = -0.9) +
-  labs(y = "Number of Heatwave Days",
+  geom_smooth(method = 'lm', se = FALSE, color = "dimgrey") +
+  labs(y = "Number of Heatwave Days (Threshold 80F)",
        x = "Year",
-       title = "Annual Amount of Heatwave Days in Thermal Caliofornia (1998-2023)") + 
+       title = "Annual Amount of Heatwave Days in Thermal California (1998-2022)") + 
   theme_bw() + 
   theme(plot.title = element_text(hjust = 0.5),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        axis.line = element_line(color = "black"))
+        axis.line = element_line(color = "black")) + 
+    ylim(0, 365) +
+  scale_x_continuous(breaks = c(1998, 2002, 2006, 2010, 2014, 2018, 2022))
+
+
+```
+#### Brief Analysis
+There is a slight increasing trend in the amount of heatwave days per year, given that our heat wave threshold is 80F
+
+### Heatwave Threshold set to 90F
+```{r}
+heatwavedays90 <- climtidy %>% 
+  mutate(HEATWAVE = ifelse(clim$TMAX >= 90, 1, 0)) %>% # created a new column that puts a 1 down if temp was 90F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 90 to the new heatwave threshold
+  drop_na() # remove NA values
+
+```
+
+```{r}
+# look at data in a chart
+
+heatwavedaystidy90 <- heatwavedays90 %>% 
+  select(YEAR, HEATWAVE) %>% # pull out only year and heatwave columns
+  group_by(YEAR) %>% # have r recognize that the data can be organized into years
+  summarise(across(c(HEATWAVE), # add up the number of days a heat wave has occurred in each year
+                   list(sum = sum)))
+
+heatwavedaystidy90 # view table
+```
+
+
+```{r}
+# visualize heatwave days in a graph
+
+ggplot(heatwavedaystidy90, aes(x = YEAR, y = HEATWAVE_sum)) +
+  geom_point(color = "darkorange4", size = 4) +
+  geom_text(mapping = aes (label = HEATWAVE_sum), 
+            position = position_dodge(width = 0.9), 
+            cex = 3, 
+            vjust = -0.9) +
+  geom_smooth(method = 'lm', se = FALSE, color = "dimgrey") +
+  labs(y = "Number of Heatwave Days (Threshold 90F)",
+       x = "Year",
+       title = "Annual Amount of Heatwave Days in Thermal California (1998-2022)") + 
+  theme_bw() + 
+  theme(plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(color = "black")) + 
+    ylim(0, 365) +
+  scale_x_continuous(breaks = c(1998, 2002, 2006, 2010, 2014, 2018, 2022))
+
+
+```
+
+
+### Heatwave Threshold set to 100F
+```{r}
+heatwavedays100 <- climtidy %>% 
+  mutate(HEATWAVE = ifelse(clim$TMAX >= 100, 1, 0)) %>% # created a new column that puts a 1 down if temp was 100F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 100 to the new heatwave threshold
+  drop_na() # remove NA values
+
+```
+
+```{r}
+# look at data in a chart
+
+heatwavedaystidy100 <- heatwavedays100 %>% 
+  select(YEAR, HEATWAVE) %>% # pull out only year and heatwave columns
+  group_by(YEAR) %>% # have r recognize that the data can be organized into years
+  summarise(across(c(HEATWAVE), # add up the number of days a heat wave has occurred in each year
+                   list(sum = sum)))
+
+heatwavedaystidy100 # view table
+```
+
+
+```{r}
+# visualize heatwave days in a graph
+
+ggplot(heatwavedaystidy100, aes(x = YEAR, y = HEATWAVE_sum)) +
+  geom_point(color = "darkorange4", size = 4) +
+  geom_text(mapping = aes (label = HEATWAVE_sum), 
+            position = position_dodge(width = 0.9), 
+            cex = 3, 
+            vjust = -0.9) +
+  geom_smooth(method = 'lm', se = FALSE, color = "dimgrey") +
+  labs(y = "Number of Heatwave Days (Threshold 100F)",
+       x = "Year",
+       title = "Annual Amount of Heatwave Days in Thermal California (1998-2022)") + 
+  theme_bw() + 
+  theme(plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(color = "black")) + 
+    ylim(0, 365) +
+  scale_x_continuous(breaks = c(1998, 2002, 2006, 2010, 2014, 2018, 2022))
+
+
+```
+
+### Heatwave Threshold set to 110F
+```{r}
+heatwavedays110 <- climtidy %>% 
+  mutate(HEATWAVE = ifelse(clim$TMAX >= 110, 1, 0)) %>% # created a new column that puts a 1 down if temp was 110F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 110 to the new heatwave threshold
+  drop_na() # remove NA values
+
+```
+
+```{r}
+# look at data in a chart
+
+heatwavedaystidy110 <- heatwavedays110 %>% 
+  select(YEAR, HEATWAVE) %>% # pull out only year and heatwave columns
+  group_by(YEAR) %>% # have r recognize that the data can be organized into years
+  summarise(across(c(HEATWAVE), # add up the number of days a heat wave has occurred in each year
+                   list(sum = sum)))
+
+heatwavedaystidy110 # view table
+```
+
+
+```{r}
+# visualize heatwave days in a graph
+
+ggplot(heatwavedaystidy110, aes(x = YEAR, y = HEATWAVE_sum)) +
+  geom_point(color = "darkorange4", size = 4) +
+  geom_text(mapping = aes (label = HEATWAVE_sum), 
+            position = position_dodge(width = 0.9), 
+            cex = 3, 
+            vjust = -0.9) +
+  geom_smooth(method = 'lm', se = FALSE, color = "dimgrey") +
+  labs(y = "Number of Heatwave Days (Threshold 110F)",
+       x = "Year",
+       title = "Annual Amount of Heatwave Days in Thermal California (1998-2022)") + 
+  theme_bw() + 
+  theme(plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(color = "black")) + 
+    ylim(0, 365) +
+  scale_x_continuous(breaks = c(1998, 2002, 2006, 2010, 2014, 2018, 2022))
+
+
+```
+
+### Heatwave Threshold set to 120F
+```{r}
+heatwavedays120 <- climtidy %>% 
+  mutate(HEATWAVE = ifelse(clim$TMAX >= 120, 1, 0)) %>% # created a new column that puts a 1 down if temp was 80F or higher, and a 0 for all other temperatures. If different heatwave threshold is selected, change the 80 to the new heatwave threshold
+  drop_na() # remove NA values
+
+```
+
+```{r}
+# look at data in a chart
+
+heatwavedaystidy120 <- heatwavedays120 %>% 
+  select(YEAR, HEATWAVE) %>% # pull out only year and heatwave columns
+  group_by(YEAR) %>% # have r recognize that the data can be organized into years
+  summarise(across(c(HEATWAVE), # add up the number of days a heat wave has occurred in each year
+                   list(sum = sum)))
+
+heatwavedaystidy120 # view table
+```
+
+
+```{r}
+# visualize heatwave days in a graph
+
+ggplot(heatwavedaystidy120, aes(x = YEAR, y = HEATWAVE_sum)) +
+  geom_point(color = "darkorange4", size = 4) +
+  geom_text(mapping = aes (label = HEATWAVE_sum), 
+            position = position_dodge(width = 0.9), 
+            cex = 3, 
+            vjust = -0.9) +
+  geom_smooth(method = 'lm', se = FALSE, color = "dimgrey") +
+  labs(y = "Number of Heatwave Days (Threshold 100F)",
+       x = "Year",
+       title = "Annual Amount of Heatwave Days in Thermal California (1998-2022)") + 
+  theme_bw() + 
+  theme(plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(color = "black")) + 
+    ylim(0, 365) +
+  scale_x_continuous(breaks = c(1998, 2002, 2006, 2010, 2014, 2018, 2022))
 
 
 ```
