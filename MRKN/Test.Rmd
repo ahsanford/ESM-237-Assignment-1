@@ -197,10 +197,35 @@ climseasonmean <- climtrendtidy %>%
   group_by(YEAR, season) %>%
   summarize(tmax= mean(TMAX), 
             tmin= mean(TMIN),
-            precip= sum(PRCP))
+            precip= sum(PRCP)) %>% 
+  filter(season == "2")
 
 climseasonmean
-  
+
+```
+
+
+```{r}
+ggplot(climseasonmean, aes(x=YEAR, tmax)) + 
+  geom_point(col="indianred") + 
+  scale_y_continuous(limits=c(min(climseasonmean$tmin),
+                              max(climseasonmean$tmax))) + 
+  geom_point(data=climseasonmean, aes(x=YEAR, tmin), col="lightblue4")
+
+b = ggplot(climseasonmean, aes(x=YEAR, tmax)) + 
+  geom_point(col="red") +
+  stat_smooth(method="lm", col="red") +
+  scale_y_continuous(limits=c(min(climseasonmean$tmin),
+                              max(climseasonmean$tmax))) + 
+  geom_point(data=climseasonmean, aes(x=YEAR, tmin), col="blue")
+
+b + geom_point(data=climseasonmean, aes(x=YEAR, tmin), col="blue") + 
+  stat_smooth(data=climseasonmean, aes(x=YEAR, tmin), col="blue", method="lm")
+
+```
+
+
+Notice how the trends in summer minimum temperature differ from the annual minimum temperature trend!
 
 
 # look only at summer
@@ -213,11 +238,5 @@ ggplot(clim.summer, aes(x=wy, y=tmin)) + stat_summary(fun.y="mean", geom="point"
 res=lm(tmax~wy, data=clim.summer)
 summary(res)
 confint(res,"wy", level=0.95)
-
-```
-Notice how the trends in summer minimum temperature differ from the annual minimum temperature trend!
-
-
-
 
 
